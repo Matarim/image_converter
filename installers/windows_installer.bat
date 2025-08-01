@@ -68,8 +68,8 @@ if %errorlevel% neq 0 (
 gem install glimmer-dsl-libui mini_magick ocran
 
 :: Download source files (replace with your actual URLs)
-powershell -Command "Invoke-WebRequest -Uri 'https://your-repo.com/image_converter.rb' -OutFile 'image_converter.rb'"
-powershell -Command "Invoke-WebRequest -Uri 'https://your-repo.com/icon.png' -OutFile 'icon.png'"
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/Matarim/image_converter/blob/main/image_converter.rb' -OutFile 'image_converter.rb'"
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/Matarim/image_converter/blob/main/logo.png' -OutFile 'icon.png'"
 
 :: Convert icon to ICO
 magick convert icon.png icon.ico

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Check if Ruby is installed
 if ! command -v ruby &> /dev/null; then
     echo "Ruby not found. Installing via Homebrew... (may prompt for password)"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -8,14 +7,12 @@ if ! command -v ruby &> /dev/null; then
     export PATH="/usr/local/opt/ruby/bin:$PATH"
 fi
 
-# Install gems and Platypus
 gem install glimmer-dsl-libui mini_magick
 if ! command -v platypus &> /dev/null; then
     echo "Platypus not found. Installing via Homebrew... (may prompt for password)"
     brew install --cask platypus
 fi
 
-# Install ImageMagick dependencies and build from source with delegates for WEBP, HEIC, SVG, PDF
 if ! command -v magick &> /dev/null || ! magick identify -list delegate | grep -q 'rsvg'; then
     echo "Installing ImageMagick with full delegate support... (may prompt for password and take time)"
     brew install pkg-config libwebp libheif librsvg ghostscript
@@ -33,13 +30,12 @@ if ! command -v magick &> /dev/null || ! magick identify -list delegate | grep -
     rm -rf ImageMagick*
 fi
 
-# Download source files (replace with your actual URLs)
-curl -O https://your-repo.com/image_converter.rb
+curl -O https://github.com/Matarim/image_converter/blob/main/image_converter.rb
 if [ $? -ne 0 ]; then
     echo "Download failed. Exiting."
     exit 1
 fi
-curl -O https://your-repo.com/icon.png
+curl -O https://github.com/Matarim/image_converter/blob/main/logo.png
 sips -s format icns icon.png --out icon.icns
 
 # Create LICENSE.txt for Platypus BSD 3-Clause license
@@ -57,13 +53,10 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 EOF
 
-# Package to .app, bundling the LICENSE.txt
 platypus -a 'Image Converter' -o None -i icon.icns -p /usr/bin/ruby -f LICENSE.txt image_converter.rb
 
-# Create DMG
 hdiutil create -volname "Image Converter" -srcfolder "Image Converter.app" -ov -format UDZO ImageConverter.dmg
 
-# Ask user to add to Applications (simulate drag-drop consent)
 read -p "Do you want to add Image Converter to your Applications folder? (y/n): " choice
 if [ "$choice" = "y" ]; then
     echo "Copying to /Applications... (may prompt for password)"
@@ -73,8 +66,6 @@ else
     echo "App bundle created in current folder. Drag Image Converter.app to Applications manually."
 fi
 
-# Clean up
 rm icon.icns LICENSE.txt
 
-# Optional: Open the app
 open "/Applications/Image Converter.app" || open "Image Converter.app"
